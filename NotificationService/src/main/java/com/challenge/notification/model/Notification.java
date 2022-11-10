@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class Notification {
-    private String channelType;
+    private ChannelType channelType;
     private String content;
 }

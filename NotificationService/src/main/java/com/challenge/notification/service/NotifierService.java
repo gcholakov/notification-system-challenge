@@ -4,5 +4,7 @@ import com.challenge.notification.model.Notification;
 
 public interface NotifierService {
 
-    void receiveMessage(Notification notification);
+    void receiveMessageForSMS(Notification notification);
+    void receiveMessageForEmail(Notification notification);
+    void receiveMessageForSlack(Notification notification);
 }

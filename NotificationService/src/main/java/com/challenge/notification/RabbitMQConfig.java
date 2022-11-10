@@ -14,26 +14,34 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * RabbitMQ queues creation/configuration.
+ */
 @Configuration
 public class RabbitMQConfig {
 
     @Value("${spring.rabbitmq.host}")
     String host;
-
     @Value("${spring.rabbitmq.username}")
     String username;
-
     @Value("${spring.rabbitmq.password}")
     String password;
-
-    @Value("${spring.rabbitmq.queue}")
-    private String queue;
-
     @Value("${spring.rabbitmq.exchange}")
     private String exchange;
 
-    @Value("${spring.rabbitmq.routingkey}")
-    private String routingKey;
+    @Value("${spring.rabbitmq.routingkey.sms}")
+    private String routingKeySMS;
+    @Value("${spring.rabbitmq.routingkey.email}")
+    private String routingKeyEmail;
+    @Value("${spring.rabbitmq.routingkey.slack}")
+    private String routingKeySlack;
+
+    @Value("${spring.rabbitmq.queue.sms}")
+    private String queueSMS;
+    @Value("${spring.rabbitmq.queue.email}")
+    private String queueEmail;
+    @Value("${spring.rabbitmq.queue.slack}")
+    private String queueSlack;
 
     @Bean
     CachingConnectionFactory connectionFactory() {
@@ -59,24 +67,56 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    Queue queue() {
+    Queue queueSMS() {
 
-        return new Queue(queue, true);
+        return new Queue(queueSMS, true);
     }
 
     @Bean
-    Exchange myExchange() {
+    Queue queueEmail() {
+
+        return new Queue(queueEmail, true);
+    }
+
+    @Bean
+    Queue queueSlack() {
+
+        return new Queue(queueSlack, true);
+    }
+
+    @Bean
+    Exchange exchange() {
 
         return ExchangeBuilder.directExchange(exchange).durable(true).build();
     }
 
     @Bean
-    Binding binding() {
+    Binding bindingSMS() {
 
         return BindingBuilder
-                .bind(queue())
-                .to(myExchange())
-                .with(routingKey)
+                .bind(queueSMS())
+                .to(exchange())
+                .with(routingKeySMS)
+                .noargs();
+    }
+
+    @Bean
+    Binding bindingEmail() {
+
+        return BindingBuilder
+                .bind(queueEmail())
+                .to(exchange())
+                .with(routingKeyEmail)
+                .noargs();
+    }
+
+    @Bean
+    Binding bindingSlack() {
+
+        return BindingBuilder
+                .bind(queueSlack())
+                .to(exchange())
+                .with(routingKeySlack)
                 .noargs();
     }
 }
