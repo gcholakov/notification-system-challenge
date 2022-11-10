@@ -1,4 +1,4 @@
-package com.challenge.notificationservice;
+package com.challenge.notification;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

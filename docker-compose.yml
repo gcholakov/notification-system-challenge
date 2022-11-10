@@ -1,4 +1,4 @@
-version: "3.7"
+version: "3.8"
 
 services:
    rabbitmq:
@@ -6,3 +6,12 @@ services:
      ports:
      - 5672:5672
      - 15672:15672
+
+   api-gateway:
+       build: ./NotificationService
+       restart: always
+       container_name: api-gateway
+       depends_on:
+           - rabbitmq
+       ports:
+           - 8083:8083
