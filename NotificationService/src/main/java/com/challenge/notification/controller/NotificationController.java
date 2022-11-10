@@ -38,6 +38,6 @@ public class NotificationController {
     @GetMapping("/v")
     public ResponseEntity<String> version() {
         log.info("Version: " + LocalDateTime.now());
-        return ResponseEntity.ok("1.2");
+        return ResponseEntity.ok("1.3");
     }
 }

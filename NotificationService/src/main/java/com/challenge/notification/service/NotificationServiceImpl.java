@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.challenge.notification.model.ChannelType;
 import com.challenge.notification.model.Notification;
 
 @Service
@@ -25,11 +24,13 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Autowired
     public NotificationServiceImpl(RabbitTemplate rabbitTemplate) {
+
         this.rabbitTemplate = rabbitTemplate;
     }
 
     @Override
     public void sendMessage(Notification notification) {
+
         switch (notification.getChannelType()) {
             case SMS:
                 rabbitTemplate.convertAndSend(exchange, routingKeySMS, notification);
