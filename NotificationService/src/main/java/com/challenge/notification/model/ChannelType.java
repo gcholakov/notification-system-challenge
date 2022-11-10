@@ -7,6 +7,7 @@ public enum ChannelType {
     private final String type;
 
     ChannelType(String type) {
+
         this.type = type;
     }
 

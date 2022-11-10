@@ -6,6 +6,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.challenge.notification.model.Notification;
+import com.challenge.notification.strategy.SendEmailNotification;
+import com.challenge.notification.strategy.SendNotification;
+import com.challenge.notification.strategy.SendSMSNotification;
+import com.challenge.notification.strategy.SendSlackNotification;
 
 @Service
 public class NotificationServiceImpl implements NotificationService {
@@ -15,8 +19,10 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Value("${spring.rabbitmq.routingkey.sms}")
     private String routingKeySMS;
+
     @Value("${spring.rabbitmq.routingkey.email}")
     private String routingKeyEmail;
+
     @Value("${spring.rabbitmq.routingkey.slack}")
     private String routingKeySlack;
 
@@ -31,16 +37,22 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void sendMessage(Notification notification) {
 
+        SendNotification sendNotification;
+
         switch (notification.getChannelType()) {
             case SMS:
-                rabbitTemplate.convertAndSend(exchange, routingKeySMS, notification);
+                sendNotification = new SendSMSNotification(exchange, routingKeySMS);
                 break;
             case Email:
-                rabbitTemplate.convertAndSend(exchange, routingKeyEmail, notification);
+                sendNotification = new SendEmailNotification(exchange, routingKeyEmail);
                 break;
             case Slack:
-                rabbitTemplate.convertAndSend(exchange, routingKeySlack, notification);
+                sendNotification = new SendSlackNotification(exchange, routingKeySlack);
                 break;
+
+            default: throw new IllegalArgumentException("Channel not implemented!");
         }
+
+        sendNotification.send(rabbitTemplate, notification);
     }
 }

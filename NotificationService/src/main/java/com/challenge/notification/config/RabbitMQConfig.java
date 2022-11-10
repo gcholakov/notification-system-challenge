@@ -1,4 +1,4 @@
-package com.challenge.notification;
+package com.challenge.notification.config;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
